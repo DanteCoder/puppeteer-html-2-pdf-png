@@ -6,7 +6,7 @@ export interface PngOptions {
 }
 
 export const html2png = async (html: string[], options?: PngOptions) => {
-  const browser = await puppeteer.launch({ headless: false });
+  const browser = await puppeteer.launch({ headless: true });
   const { style, zoom } = options ?? {};
 
   await Promise.all(

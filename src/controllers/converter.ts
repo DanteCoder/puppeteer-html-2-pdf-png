@@ -18,6 +18,7 @@ export const convertToPdf: RequestHandler = async (req, res, next) => {
   try {
     const html = req.body.html as string[];
     const style = req.body.style as string | undefined;
+    const zoom = req.body.zoom as string;
     const { width, height } = req.body.size as { width: string; height: string };
 
     await html2pdf(html, {
@@ -26,6 +27,7 @@ export const convertToPdf: RequestHandler = async (req, res, next) => {
         width: parseInt(width),
         height: parseInt(height),
       },
+      zoom: parseFloat(zoom),
     });
 
     res.sendStatus(200);
@@ -53,6 +55,20 @@ export const validateHtml: RequestHandler = (req, _res, next) => {
 
   if (style != null && typeof style !== 'string') {
     throw new Error('"style" must be a string.');
+  }
+
+  next();
+};
+
+export const validateZoom: RequestHandler = (req, _res, next) => {
+  const { zoom: _zoom } = req.body;
+
+  if (_zoom == null) return next();
+
+  const zoom = parseFloat(_zoom);
+
+  if (isNaN(zoom)) {
+    throw new Error('"zoom" is not a valid number.');
   }
 
   next();
